@@ -12,10 +12,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox; // Added import
 import javafx.stage.Stage;
+import model.Account;
 import model.User;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +43,7 @@ public class AdminController {
     private TableColumn<User, Boolean> lockedColumn;
 
     @FXML
-    private TableColumn<User, Integer> attemptsColumn; // Added failed attempts column
+    private TableColumn<User, Integer> attemptsColumn;
 
     @FXML
     private Button lockUnlockButton;
@@ -54,11 +57,27 @@ public class AdminController {
     @FXML
     private Button logoutButton;
 
+    @FXML
+    private Button showCreateFormButton;
+
+    @FXML
+    private VBox createUserForm;
+
+    @FXML
+    private TextField newUsernameField;
+
+    @FXML
+    private PasswordField newPasswordField;
+
+    @FXML
+    private ChoiceBox<String> newRoleChoiceBox;
+
+    @FXML
+    private Label messageLabel;
 
     private User currentAdminUser;
     private UserDAO userDAO;
-    private AccountDAO accountDAO; // Needed if admin needs to view/manage accounts directly
-
+    private AccountDAO accountDAO;
 
     private final ObservableList<User> userData = FXCollections.observableArrayList();
 
@@ -67,9 +86,6 @@ public class AdminController {
         accountDAO = new AccountDAO();
     }
 
-    /**
-     * Initializes the controller class.
-     */
     @FXML
     private void initialize() {
         // Initialize the table columns
@@ -78,7 +94,6 @@ public class AdminController {
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
         lockedColumn.setCellValueFactory(new PropertyValueFactory<>("locked"));
         attemptsColumn.setCellValueFactory(new PropertyValueFactory<>("failedAttempts"));
-
 
         // Custom cell factory for boolean 'locked' column to show text like "Yes"/"No" or icons
         lockedColumn.setCellFactory(column -> new TableCell<User, Boolean>() {
@@ -100,13 +115,11 @@ public class AdminController {
             }
         });
 
-
         usersTable.setItems(userData);
 
         // Disable buttons initially until a user is selected
         lockUnlockButton.setDisable(true);
         deleteUserButton.setDisable(true);
-
 
         // Add listener to enable/disable buttons based on selection
         usersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -117,30 +130,25 @@ public class AdminController {
             // Update Lock/Unlock button text based on selected user's status
             if (userSelected) {
                 lockUnlockButton.setText(newSelection.isLocked() ? "Unlock User" : "Lock User");
-                // Prevent admin from locking/deleting themselves (optional safety)
+                // Prevent admin from locking/deleting themselves
                 if (currentAdminUser != null && newSelection.getId() == currentAdminUser.getId()) {
                     lockUnlockButton.setDisable(true);
                     deleteUserButton.setDisable(true);
                 }
-
             } else {
                 lockUnlockButton.setText("Lock/Unlock");
             }
         });
+
+        // Initialize the ChoiceBox for roles
+        newRoleChoiceBox.setItems(FXCollections.observableArrayList("USER", "ADMIN"));
+        newRoleChoiceBox.setValue("USER");
     }
 
-
-    /**
-     * Receives the logged-in admin user data.
-     *
-     * @param user The logged-in Admin User object.
-     */
     public void initData(User user) {
         if (user == null || user.getRole() != User.Role.ADMIN) {
-            // This should not happen if navigation logic is correct
             System.err.println("Error: AdminController initialized with non-admin or null user.");
-            // Optionally force logout or show error
-            handleLogoutButtonAction(null); // Need to pass an event or handle differently
+            handleLogoutButtonAction(null);
             return;
         }
         this.currentAdminUser = user;
@@ -151,7 +159,7 @@ public class AdminController {
     private void loadUsersData() {
         List<User> users = userDAO.getAllUsers();
         userData.setAll(users);
-        usersTable.getSelectionModel().clearSelection(); // Clear selection after refresh
+        usersTable.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -168,12 +176,10 @@ public class AdminController {
             return;
         }
 
-        // Prevent admin from locking/unlocking themselves
         if (currentAdminUser != null && selectedUser.getId() == currentAdminUser.getId()) {
             showErrorAlert("Action Denied", "Administrators cannot lock/unlock their own account.");
             return;
         }
-
 
         boolean currentLockStatus = selectedUser.isLocked();
         String action = currentLockStatus ? "unlock" : "lock";
@@ -187,7 +193,7 @@ public class AdminController {
             boolean success = userDAO.updateUserLockStatus(selectedUser.getUsername(), !currentLockStatus);
             if (success) {
                 showInfoAlert("Success", String.format("User '%s' has been %sed.", selectedUser.getUsername(), action));
-                loadUsersData(); // Refresh the table
+                loadUsersData();
             } else {
                 showErrorAlert("Error", String.format("Failed to %s user '%s'.", action, selectedUser.getUsername()));
             }
@@ -202,12 +208,10 @@ public class AdminController {
             return;
         }
 
-        // Prevent admin from deleting themselves
         if (currentAdminUser != null && selectedUser.getId() == currentAdminUser.getId()) {
             showErrorAlert("Action Denied", "Administrators cannot delete their own account.");
             return;
         }
-
 
         Optional<ButtonType> result = showConfirmationAlert(
                 "Confirm Deletion",
@@ -218,7 +222,7 @@ public class AdminController {
             boolean success = userDAO.deleteUser(selectedUser.getId());
             if (success) {
                 showInfoAlert("Success", String.format("User '%s' has been deleted.", selectedUser.getUsername()));
-                loadUsersData(); // Refresh the table
+                loadUsersData();
             } else {
                 showErrorAlert("Error", String.format("Failed to delete user '%s'. Check logs.", selectedUser.getUsername()));
             }
@@ -228,35 +232,28 @@ public class AdminController {
     @FXML
     private void handleLogoutButtonAction(ActionEvent event) {
         try {
-            // Load the login view
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml")); // Ensure path is correct
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
             Parent loginRoot = loader.load();
             Scene loginScene = new Scene(loginRoot);
 
-            // Get the current stage (handle null event if called programmatically)
             Stage stage = null;
             if (event != null && event.getSource() instanceof Node) {
                 stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             } else if (welcomeLabel != null && welcomeLabel.getScene() != null) {
-                // Fallback if event is null (e.g. called from initData on error)
                 stage = (Stage) welcomeLabel.getScene().getWindow();
             }
 
             if (stage != null) {
-                // Apply CSS if available
                 String css = getClass().getResource("/resources/style.css").toExternalForm();
                 if (css != null) {
                     loginScene.getStylesheets().add(css);
                 }
-                // Set the new scene
                 stage.setScene(loginScene);
                 stage.setTitle("Login");
                 stage.show();
             } else {
                 System.err.println("Logout failed: Could not determine the current stage.");
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Logout Error", "Failed to return to the login screen.");
@@ -266,7 +263,38 @@ public class AdminController {
         }
     }
 
-    // --- Helper methods for Alerts ---
+    @FXML
+    private void toggleCreateForm() {
+        createUserForm.setVisible(!createUserForm.isVisible());
+        showCreateFormButton.setText(createUserForm.isVisible() ? "Hide Create User Form" : "Show Create User Form");
+    }
+
+    @FXML
+    private void handleCreateUser() {
+        String username = newUsernameField.getText();
+        String password = newPasswordField.getText();
+        String role = newRoleChoiceBox.getValue();
+
+        if (username.isEmpty() || password.isEmpty() || role == null) {
+            messageLabel.setText("All fields are required.");
+            return;
+        }
+
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(password); // Hashed by UserDAO
+        newUser.setRole(User.Role.valueOf(role));
+
+        User createdUser = userDAO.register(newUser);
+        if (createdUser != null) {
+            accountDAO.createAccount(new Account(createdUser.getId(), BigDecimal.ZERO));
+            messageLabel.setText("User created successfully.");
+            loadUsersData();
+        } else {
+            messageLabel.setText("Failed to create user.");
+        }
+    }
+
     private void showErrorAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -290,5 +318,4 @@ public class AdminController {
         alert.setContentText(content);
         return alert.showAndWait();
     }
-
 }

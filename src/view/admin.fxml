@@ -5,6 +5,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -29,7 +32,7 @@
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <TableView fx:id="usersTable" prefHeight="350.0" VBox.vgrow="ALWAYS">
+                <TableView fx:id="usersTable" prefHeight="200.0" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="userIdColumn" prefWidth="50.0" text="ID" />
                         <TableColumn fx:id="usernameColumn" prefWidth="150.0" text="Username" />
@@ -48,6 +51,23 @@
                         <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#handleRefreshButtonAction" text="Refresh List" style="-fx-base: lightblue;"/>
                     </children>
                 </HBox>
+
+                <!-- Toggle Button for Create User Form -->
+                <Button fx:id="showCreateFormButton" text="Show Create User Form" onAction="#toggleCreateForm" style="-fx-base: lightgreen;" />
+
+                <!-- Create User Form -->
+                <VBox fx:id="createUserForm" visible="false" spacing="10" alignment="CENTER">
+                    <Label text="Create New User">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="newUsernameField" promptText="New Username" prefWidth="200.0" />
+                    <PasswordField fx:id="newPasswordField" promptText="New Password" prefWidth="200.0" />
+                    <ChoiceBox fx:id="newRoleChoiceBox" prefWidth="150.0" />
+                    <Button fx:id="createUserButton" text="Create User" onAction="#handleCreateUser" style="-fx-base: lightgreen;" />
+                    <Label fx:id="messageLabel" text="" textFill="RED" wrapText="true"/>
+                </VBox>
             </children>
             <BorderPane.margin>
                 <Insets bottom="10.0" left="10.0" right="10.0" />
