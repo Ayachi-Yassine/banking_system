@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="15.0" prefHeight="450.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RegisterController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label text="Register New User">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <TextField fx:id="usernameField" promptText="Username" />
+        <PasswordField fx:id="passwordField" promptText="Password (min 8 chars)" />
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" />
+        <TextField fx:id="generatedPasswordField" promptText="Generated Password (Optional)" editable="false"/>
+        <Button fx:id="generatePasswordButton" mnemonicParsing="false" text="Generate Strong Password"/>
+
+        <Button fx:id="registerButton" mnemonicParsing="false" onAction="#handleRegisterButtonAction" prefWidth="100.0" text="Register" />
+        <Button fx:id="backToLoginButton" mnemonicParsing="false" onAction="#handleBackToLoginButtonAction" prefWidth="100.0" text="Back to Login" style="-fx-base: lightgrey;"/>
+        <Label fx:id="messageLabel" text="" textFill="RED" wrapText="true"/>
+    </children>
+</VBox>

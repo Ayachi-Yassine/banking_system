@@ -1,0 +1,22 @@
+<component name="libraryTable">
+  <library name="javafx-sdk-24">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/jfx.incubator.richtext.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/jfx.incubator.input.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/jdk.jsobject.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/javafx.web.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/javafx.swing.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/javafx.media.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/javafx.graphics.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/javafx.fxml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/javafx.controls.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/javafx.base.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../bluestacks/javafx-sdk-24/lib/javafx-swt.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../bluestacks/javafx-sdk-24" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../bluestacks/javafx-sdk-24" recursive="false" type="SOURCES" />
+  </library>
+</component>

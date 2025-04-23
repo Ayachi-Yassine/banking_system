@@ -1,0 +1,58 @@
+/* Basic Styles for Banking App */
+
+.root {
+    -fx-font-family: "Arial", sans-serif;
+    -fx-font-size: 13px;
+}
+
+.label {
+    -fx-text-fill: #333;
+}
+
+.button {
+    -fx-background-color: #4CAF50; /* Green */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+/* Style for error messages */
+#messageLabel {
+    -fx-font-weight: bold;
+}
+
+/* Style for TableView */
+.table-view {
+    -fx-border-color: lightgrey;
+    -fx-border-width: 1px;
+}
+
+.table-column {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Add specific styles for buttons if needed */
+#deleteUserButton {
+    -fx-background-color: #f44336; /* Red */
+}
+#deleteUserButton:hover {
+    -fx-background-color: #da190b;
+}
+
+#logoutButton {
+    -fx-background-color: #ff9800; /* Orange */
+}
+#logoutButton:hover {
+    -fx-background-color: #e68a00;
+}
+
+#refreshButton {
+    -fx-background-color: #2196F3; /* Blue */
+}
+#refreshButton:hover {
+    -fx-background-color: #1e88e5;
+}
