@@ -47,7 +47,7 @@ public class Database {
     }
 
     /**
-     * Closes the database connection if it is open.
+     * Closes the database connection ifs it is open.
      */
     public static void closeConnection() {
         if (connection != null) {
